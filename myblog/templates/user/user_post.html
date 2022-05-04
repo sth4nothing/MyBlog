@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %} 用户：{{ user.username }} {% endblock %}
+{% block content %}
+<div class="row g-5">
+    {% for post in posts %}
+    <div class="post">
+        <h2><a href="{{ url_for('blog.post', post_id=post.post_id) }}" class="text-decoration-none">{{ post.title }}</a>
+        </h2>
+        <div class="meta">
+            <span class="author">作者：{{ post.user.username }}</span>
+            {% if post.creation_time != post.modification_time %}
+            <span class="modify_at">修改时间：{{ post.modification_time | strftime }}</span>
+            {% else %}
+            <span class="create_at">发布时间：{{ post.creation_time | strftime }}</span>
+            {% endif %}
+            <span class="tag">标签：{{ post.tags_str }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<nav class="navbar" aria-label="翻页">
+    <ul class="pagination">
+        {% if page > 1 %}
+        <li class="page-item">
+            <a href="{{ url_for('user.user_post', page=page - 1) }}" class="page-link">上一页</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a href="#" class="page-link">上一页</a>
+        </li>
+        {% endif %}
+        {% if page < page_num %}
+        <li class="page-item">
+            <a href="{{ url_for('user.user_post', page=page + 1) }}" class="page-link">下一页</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a href="#" class="page-link">下一页</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

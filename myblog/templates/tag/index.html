@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %} 标签列表 {% endblock %}
+{% block content %}
+{% if tags %}
+<ul class="list-group">
+    {% for tag in tags %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('tag.detail', tag_id=tag.tag_id) }}" class="text-decoration-none">{{ tag.tag_str }}</a>
+        {% if current_user.is_admin and not tag.posts %}
+        <a href="{{ url_for('tag.delete', tag_id=tag.tag_id) }}" class="badge rounded-pill btn btn-danger">0</a>
+        {% else %}
+        <span class="badge rounded-pill {{ 'bg-primary' if tag.posts else 'bg-danger' }}">{{ tag.posts | length }}</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
