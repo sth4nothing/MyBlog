@@ -13,12 +13,13 @@ from myblog import app
 application = app.wsgi_app
 
 if not root.joinpath('myblog', 'myblog.sqlite').exists():
-    from myblog.models import db, User
-    db.create_all()
-    admin = User(username='admin')
-    admin.set_password('$th4nothing')
-    db.session.add(admin)
-    will = User(username='will')
-    will.set_password('w1LL1314')
-    db.session.add(will)
-    db.session.commit()
+    with app.app_context():
+        from myblog.models import db, User
+        db.create_all()
+        admin = User(username='admin')
+        admin.set_password('$th4nothing')
+        db.session.add(admin)
+        will = User(username='will')
+        will.set_password('w1LL1314')
+        db.session.add(will)
+        db.session.commit()
