@@ -3,10 +3,11 @@ import math
 import re
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_user
 from loguru import logger
+from myblog.utils import dump_db
 from myblog.ext import db
-from myblog.forms import PostForm
+from myblog.forms import AdminForm, AdminLoginForm, PostForm
 from myblog.models import Comment, Post, Tag, User
 
 bp_user = Blueprint('user', __name__)
@@ -131,3 +132,42 @@ def delete_comment(comment_id):
                 flash(e)
         return redirect(url_for('blog.post', post_id=comment.post_id))
     return redirect(request.referrer)
+
+@bp_user.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if current_user.is_authenticated and current_user.is_admin:
+        return redirect(url_for('user.admin'))
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        admin = User.query.filter_by(username='admin').first()
+        if admin and admin.validate_password(form.password.data):
+            login_user(admin, remember=True)
+            return redirect(url_for('user.admin'))
+        flash('Invalid password')
+    return render_template('auth/login.html', form=form)
+
+
+@bp_user.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for('user.admin_login'))
+    form = AdminForm()
+    if form.validate_on_submit():
+        if form.export.data:
+            data = dump_db()
+            if data:
+                flash(data)
+        elif form.sql.data:
+            try:
+                ret = list()
+                for line in form.sql.data.split(';'):
+                    if not line.strip():
+                        continue
+                    ret.append(db.session.execute(line).all())
+                db.session.commit()
+                for r in ret:
+                    flash(str(r))
+            except Exception as e:
+                db.session.rollback()
+                flash(e)
+    return render_template('user/admin.html', form=form)

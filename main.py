@@ -13,8 +13,8 @@ from myblog import app
 application = app.wsgi_app
 
 if not root.joinpath('myblog', 'myblog.sqlite').exists():
+    from myblog import db, User
     with app.app_context():
-        from myblog.models import db, User
         db.create_all()
         admin = User(username='admin')
         admin.set_password('$th4nothing')
