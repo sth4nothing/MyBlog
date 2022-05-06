@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 from pathlib import Path
@@ -6,7 +5,6 @@ from pathlib import Path
 root = Path(__file__).parent
 sys.path.insert(0, str(root))
 os.chdir(str(root))
-logging.getLogger('waitress').setLevel(logging.INFO)
 
 from myblog import app
 

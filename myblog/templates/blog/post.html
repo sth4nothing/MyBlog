@@ -24,7 +24,7 @@
         <span class="meta-delete"><a href="{{ url_for('user.delete_post', post_id=post.post_id) }}" class="btn btn-danger">删除</a></span>
         {% endif %}
         {% endif %}
-        <span class="meta-post-text d-none" id="post-text"><!--{{ post.content | safe }}--></span>
+        <span class="meta-post-text d-none" id="post-text"><!--{{ post.content.replace('`n', '\n') | safe }}--></span>
     </div>
     <div class="meta text-secondary">
         <span class="meta-tag">

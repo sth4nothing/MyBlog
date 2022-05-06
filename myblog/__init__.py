@@ -35,5 +35,8 @@ def before_first_request():
         will = User(username='will')
         will.set_password('w1LL1314')
         db.session.add(will)
+        ting = User(username='ting')
+        ting.set_password('T1ng1234')
+        db.session.add(ting)
         db.session.commit()
         logger.info('Create database and admin user')
