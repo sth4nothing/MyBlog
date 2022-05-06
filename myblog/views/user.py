@@ -159,7 +159,7 @@ def admin():
                         continue
                     ret = db.session.execute(line)
                     if ret.returns_rows:
-                        rets.append(str(ret.all()))
+                        rets.append(str(list(ret.cursor)))
                     elif ret.rowcount > 0:
                         rets.append(f'{ret.rowcount} rows affected')
                 db.session.commit()
