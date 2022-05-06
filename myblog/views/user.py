@@ -8,7 +8,7 @@ from loguru import logger
 from myblog.ext import db
 from myblog.forms import AdminForm, PostForm
 from myblog.models import Comment, Post, Tag, User
-from myblog.utils import dump_db, html_escape, text_decode, text_encode
+from myblog.utils import dump_db, html_escape
 
 bp_user = Blueprint('user', __name__)
 
@@ -30,7 +30,7 @@ def new_post():
     if form.validate_on_submit():
         try:
             post = Post.create(form.title.data,
-                               text_encode(form.content.data),
+                               form.content.data,
                                current_user)
             for tag_str in re.split(r',\s*', form.tags_str.data.strip()):
                 if not tag_str:
@@ -54,13 +54,13 @@ def edit_post(post_id):
         form = PostForm(
             data={
                 'title': post.title,
-                'content': text_decode(post.content),
+                'content': post.content_decoded,
                 'tags_str': post.tags_str
             })
         if form.validate_on_submit():
             try:
                 post.title = form.title.data
-                post.content = text_encode(form.content.data)
+                post.content_decoded = form.content.data
                 post.tags = []
                 post.modification_time = datetime.datetime.now()
                 for tag_str in re.split(r',\s*', form.tags_str.data.strip()):

@@ -4,6 +4,8 @@ from functools import cached_property
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from myblog.utils import text_decode, text_encode
+
 from .ext import db
 
 
@@ -83,6 +85,14 @@ class Post(db.Model):
     def tags_str(self):
         return ', '.join([tag.tag_str for tag in self.tags])
 
+    @property
+    def content_decoded(self):
+        return text_decode(self.content)
+
+    @content_decoded.setter
+    def cotent_decoded(self, value):
+        self.content = text_encode(value)
+
     @cached_property
     def sorted_comments(self):
         return sorted(self.comments,
@@ -93,10 +103,10 @@ class Post(db.Model):
     def create(title, content, user):
         t = datetime.datetime.now()
         post = Post(title=title,
-                    content=content,
                     user=user,
                     creation_time=t,
                     modification_time=t)
+        post.content_decoded = content
         db.session.add(post)
         return post
 
