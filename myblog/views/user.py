@@ -147,14 +147,18 @@ def admin():
                 flash(html_escape(data))
         elif form.sql.data:
             try:
-                ret = list()
+                rets = list()
                 for line in form.sql.data.split(';'):
                     if not line.strip():
                         continue
-                    ret.append(db.session.execute(line).all())
+                    ret = db.session.execute(line)
+                    if ret.returns_rows:
+                        rets.append(str(ret.all()))
+                    elif ret.rowcount > 0:
+                        rets.append(f'{ret.rowcount} rows affected')
                 db.session.commit()
-                for r in ret:
-                    flash(html_escape(str(r)))
+                for r in rets:
+                    flash(html_escape(r))
             except Exception as e:
                 db.session.rollback()
                 flash(e)
