@@ -154,7 +154,7 @@ def admin():
         elif form.sql.data:
             try:
                 rets = list()
-                for line in form.sql.data.split(';'):
+                for line in form.sql.data.split(';;'):
                     if not line.strip():
                         continue
                     ret = db.session.execute(line)
