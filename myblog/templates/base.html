@@ -50,6 +50,11 @@
                             <li>
                                 <a href="{{ url_for('user.new_post') }}" class="dropdown-item">创作博文</a>
                             </li>
+                            {% if current_user.is_admin %}
+                            <li>
+                                <a href="{{ url_for('user.admin') }}" class="dropdown-item">管理后台</a>
+                            </li>
+                            {% endif %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

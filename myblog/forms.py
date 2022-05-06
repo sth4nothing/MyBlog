@@ -23,9 +23,6 @@ class CommentForm(FlaskForm):
     content = StringField('评论', validators=[DataRequired(), Length(1, 500)])
     submit = SubmitField('提交')
 
-class AdminLoginForm(FlaskForm):
-    password = PasswordField('密码', validators=[DataRequired()])
-    submit = SubmitField('登录')
 
 class AdminForm(FlaskForm):
     sql = TextAreaField('SQL')

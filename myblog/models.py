@@ -1,5 +1,6 @@
 import datetime
 from functools import cached_property
+
 from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -36,7 +37,7 @@ class Tag(db.Model):
                             back_populates='tags',
                             secondary='post_tag',
                             lazy=True)
-    
+
     def __repr__(self) -> str:
         return f'<Tag "{self.tag_str}">'
 
@@ -77,7 +78,6 @@ class Post(db.Model):
     modification_time = db.Column(db.DateTime, nullable=False)
     comments = db.relationship('Comment', back_populates='post', lazy=True)
     tags = db.relationship('Tag', back_populates='posts', secondary='post_tag')
-    
 
     @property
     def tags_str(self):
@@ -85,12 +85,16 @@ class Post(db.Model):
 
     @cached_property
     def sorted_comments(self):
-        return sorted(self.comments, key=lambda x: x.creation_time, reverse=True)
+        return sorted(self.comments,
+                      key=lambda x: x.creation_time,
+                      reverse=True)
 
     @staticmethod
     def create(title, content, user):
         t = datetime.datetime.now()
-        post = Post(title=title, content=content, user=user,
+        post = Post(title=title,
+                    content=content,
+                    user=user,
                     creation_time=t,
                     modification_time=t)
         db.session.add(post)

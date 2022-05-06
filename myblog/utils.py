@@ -1,3 +1,4 @@
+import re
 import sqlite3
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
@@ -13,6 +14,21 @@ def dump_db():
         conn = sqlite3.connect(str(db_file))
         return '\n'.join(line for line in conn.iterdump())
     return ''
+
+
+def html_escape(text):
+    mapping = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+    }
+
+    def replace(match):
+        return mapping[match.group(0)]
+
+    return re.sub('|'.join(re.escape(key) for key in mapping), replace, text)
 
 
 def is_safe_url(url):
