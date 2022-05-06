@@ -1,3 +1,4 @@
+import base64
 import re
 import sqlite3
 from pathlib import Path
@@ -14,6 +15,14 @@ def dump_db():
         conn = sqlite3.connect(str(db_file))
         return '\r\n'.join(line for line in conn.iterdump())
     return ''
+
+
+def text_encode(text):
+    return base64.b64encode(text.encode('utf-8')).decode('utf-8')
+
+
+def text_decode(text):
+    return base64.b64decode(text.encode('utf-8')).decode('utf-8')
 
 
 def html_escape(text):
