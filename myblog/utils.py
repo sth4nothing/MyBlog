@@ -12,7 +12,7 @@ def dump_db():
     db_file = project_dir / 'myblog.sqlite'
     if db_file.exists():
         conn = sqlite3.connect(str(db_file))
-        return '\n'.join(line for line in conn.iterdump())
+        return '\r\n'.join(line for line in conn.iterdump())
     return ''
 
 

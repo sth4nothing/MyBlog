@@ -30,7 +30,7 @@ def new_post():
     if form.validate_on_submit():
         try:
             post = Post.create(form.title.data,
-                               form.content.data.replace('\n', '`n'),
+                               form.content.data.replace('\n', '`n').replace('\t', '`t'),
                                current_user)
             for tag_str in re.split(r',\s*', form.tags_str.data.strip()):
                 if not tag_str:
@@ -54,13 +54,13 @@ def edit_post(post_id):
         form = PostForm(
             data={
                 'title': post.title,
-                'content': post.content.replace('`n', '\n'),
+                'content': post.content.replace('`n', '\n').replace('`t', '\t'),
                 'tags_str': post.tags_str
             })
         if form.validate_on_submit():
             try:
                 post.title = form.title.data
-                post.content = form.content.data.replace('\n', '`n')
+                post.content = form.content.data.replace('\n', '`n').replace('\t', '`t')
                 post.tags = []
                 post.modification_time = datetime.datetime.now()
                 for tag_str in re.split(r',\s*', form.tags_str.data.strip()):
